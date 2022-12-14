@@ -25,27 +25,42 @@ void findWaitingTimeRR(ProcessType plist[], int n,int quantum)
           (iii) bt_rem[i] = 0; // This process is over
        
    */
-  int t = 0;
-  int rem_bt[n];
-  int process_completed = 0;
-  int i;
-  for (i = 0; i < n; i++) {
-    plist[i].wt = 0;
-    rem_bt[i] = plist[i].bt;
-  }
-  while (process_completed != n) {
-    for (i=0; i<n; i++) {
-      if (rem_bt[i] > quantum){
-        t += quantum;
-        rem_bt[i] -= quantum;
-      }
-      else {
-        t += rem_bt[i];
-        if(rem_bt[i] != 0) {
-          plist[i].wt = t - plist[i].bt;
-          rem_bt[i] = 0;
-          process_completed += 1;
-        } 
+  // Initialize time to zero
+int t = 0;
+
+// Array to hold the remaining burst time for each process
+int rem_bt[n];
+
+// Initialize number of completed processes to zero
+int process_completed = 0;
+
+// Loop through each process
+for (int i = 0; i < n; i++) {
+// Initialize waiting time to zero
+plist[i].wt = 0;
+// Set the remaining burst time of the current process to its burst time
+rem_bt[i] = plist[i].bt;
+}
+
+// Continue until all processes have completed
+while (process_completed != n) {
+// Loop through each process
+for (int i=0; i<n; i++) {
+// If the remaining burst time of the current process is greater than
+// the time quantum, increment time by the time quantum and decrease
+// the remaining burst time of the current process by the time quantum
+if (rem_bt[i] > quantum){
+t += quantum;
+rem_bt[i] -= quantum;
+}
+// If the remaining burst time of the current process is less than or
+// equal to the time quantum, increment time by the remaining burst time
+// and set the remaining burst time of the current process to zero
+else {
+t += rem_bt[i];
+// If the remaining burst time is not zero, set the waiting time
+// of the current process to the difference between the current time
+// and
       }
     }
   }
@@ -76,22 +91,37 @@ void findWaitingTimeSJF(ProcessType plist[], int n)
     rem_bt[i] = plist[i].bt; 
   }
  
-  while (process_completed != n) {
-    //find mininum time
-    int process_with_mininum_rem_time = 0;
-    int i;
-    for (i=0; i<n; i++) {
-      if (rem_bt[i] < rem_bt[process_with_mininum_rem_time]) {
-        process_with_mininum_rem_time = i;
-      }
-    }
-    completion_time += 1;
-    rem_bt[process_with_mininum_rem_time] -= 1;
-    if ( rem_bt[process_with_mininum_rem_time] == 0) {
-      process_completed += 1;
-      rem_bt[process_with_mininum_rem_time] = INT_MAX;
-      plist[process_with_mininum_rem_time].wt = completion_time - plist[process_with_mininum_rem_time].bt - 0;
-    }
+  // Continue until all processes have completed
+while (process_completed != n) {
+// Find the process with the minimum remaining burst time
+int process_with_mininum_rem_time = 0;
+for (int i=0; i<n; i++) {
+// If the remaining burst time of the current process is less than
+// the remaining burst time of the process with the minimum remaining
+// burst time, set the process with the minimum remaining burst time
+// to the current process
+if (rem_bt[i] < rem_bt[process_with_mininum_rem_time]) {
+process_with_mininum_rem_time = i;
+}
+}
+// Increment the completion time by one
+completion_time += 1;
+
+// Decrement the remaining burst time of the process with the minimum
+// remaining burst time by one
+rem_bt[process_with_mininum_rem_time] -= 1;
+
+// If the remaining burst time of the process with the minimum remaining
+// burst time is zero, increment the number of completed processes by one,
+// set the remaining burst time of the process to the maximum integer value
+// to ensure that it is not selected again, and set the waiting time of the
+// process to the difference between the completion time and its burst time
+if (rem_bt[process_with_mininum_rem_time] == 0) {
+    process_completed += 1;
+    rem_bt[process_with_mininum_rem_time] = INT_MAX;
+    plist[process_with_mininum_rem_time].wt = completion_time - plist[process_with_mininum_rem_time].bt - 0;
+}
+}
     
   }
 }
